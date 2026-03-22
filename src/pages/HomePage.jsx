@@ -15,7 +15,7 @@ function HomePage() {
   const navigate = useNavigate()
 
   // Packages all search inputs into URL query parameters
-  // e.g. /search?from=LHR&to=JFK&departure=2025-04-12&trip=round
+  
   const handleSearch = () => {
     navigate(`/search?from=${from}&to=${to}&departure=${departure}&return=${returnDate}&passengers=${passengers}&trip=${tripType}`)
   }
