@@ -1,0 +1,116 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: #1a1a1a;
+}
+
+/* Navbar */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 48px;
+  background-color: #0a1628;
+  color: white;
+}
+
+nav h1 {
+  font-size: 24px;
+  color: white;
+}
+
+nav ul {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+nav ul li a:hover {
+  color: #e8c96e;
+}
+
+/* Hero */
+section:nth-child(2) {
+  background-color: #0a1628;
+  color: white;
+  text-align: center;
+  padding: 80px 24px 40px;
+}
+
+section:nth-child(2) h2 {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+section:nth-child(2) p {
+  font-size: 18px;
+  color: #9ba8bc;
+}
+
+/* Search Bar */
+section:nth-child(3) {
+  background-color: #0a1628;
+  padding: 0 24px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+section:nth-child(3) div {
+  display: flex;
+  gap: 8px;
+}
+
+section:nth-child(3) div button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: rgba(255,255,255,0.1);
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+section:nth-child(3) div button:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+section:nth-child(3) input {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  width: 300px;
+}
+
+section:nth-child(3) > button {
+  padding: 12px 40px;
+  background-color: #e8c96e;
+  color: #0a1628;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+section:nth-child(3) > button:hover {
+  background-color: #c4a347;
+}
+
+nav h1 svg {
+  color: #e8c96e;
+}
