@@ -49,14 +49,9 @@ function MyBookingsPage() {
     },
   ]
 
-  // Filters bookings by the email the user entered
-  const myBookings = mockBookings.filter(
-    (booking) => booking.email.toLowerCase() === email.toLowerCase()
-  )
-
-  // Cancels a booking by updating its status to cancelled
   const [bookings, setBookings] = useState(mockBookings)
 
+  // Cancels a booking by updating its status to cancelled
   const handleCancel = (id) => {
     setBookings(bookings.map((booking) =>
       booking.id === id ? { ...booking, status: 'cancelled' } : booking
@@ -67,25 +62,27 @@ function MyBookingsPage() {
     setSearched(true)
   }
 
-  // Filters from the stateful bookings array instead of mockBookings
+  // Filters bookings by the email the user entered
   const results = bookings.filter(
     (booking) => booking.email.toLowerCase() === email.toLowerCase()
   )
 
   return (
-    <div>
+    <div className="page">
 
       {/* Email Search */}
-      <section>
+      <section className="card">
         <h2>My Bookings</h2>
         <p>Enter your email address to view your bookings</p>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button onClick={handleSearch}>Find Bookings</button>
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <button className="btn-primary" onClick={handleSearch}>Find Bookings</button>
       </section>
 
       {/* Booking Results */}
@@ -95,18 +92,18 @@ function MyBookingsPage() {
             <p>No bookings found for this email address</p>
           ) : (
             results.map((booking) => (
-              <div key={booking.id}>
+              <div key={booking.id} className="card">
                 <h3>Booking Reference: {booking.ref}</h3>
                 <p>Flight: {booking.flight}</p>
                 <p>Route: {booking.from} → {booking.to}</p>
                 <p>Departure: {booking.departure}</p>
                 <p>Seat: {booking.seat}</p>
                 <p>Price: £{booking.price}</p>
-                <p>Status: {booking.status}</p>
+                <p>Status: <span className={booking.status === 'confirmed' ? 'badge-confirmed' : 'badge-cancelled'}>{booking.status}</span></p>
 
                 {/* Only show cancel button if booking is confirmed */}
                 {booking.status === 'confirmed' && (
-                  <button onClick={() => handleCancel(booking.id)}>Cancel Booking</button>
+                  <button className="btn-danger" onClick={() => handleCancel(booking.id)}>Cancel Booking</button>
                 )}
               </div>
             ))

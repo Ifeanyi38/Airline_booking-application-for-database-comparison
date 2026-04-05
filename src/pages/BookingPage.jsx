@@ -54,10 +54,10 @@ function BookingPage() {
   if (!flight) return <p>Flight not found</p>
 
   return (
-    <div>
+    <div className="page">
 
       {/* Flight Summary */}
-      <section>
+      <section className="card">
         <h2>Booking — {flight.flightNumber}</h2>
         <p>{flight.fromCity} → {flight.toCity}</p>
         <p>{flight.departure} → {flight.arrival} · {flight.duration}</p>
@@ -65,23 +65,25 @@ function BookingPage() {
       </section>
 
       {/* Passenger Details Form */}
-      <section>
+      <section className="card">
         <h3>Passenger Details</h3>
-        <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-        <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-        <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        <input type="text" placeholder="Passport Number" value={passport} onChange={(e) => setPassport(e.target.value)} />
-        <input type="date" placeholder="Date of Birth" value={dob} onChange={(e) => setDob(e.target.value)} />
+        <div className="form-group">
+          <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+          <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="tel" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <input type="text" placeholder="Passport Number" value={passport} onChange={(e) => setPassport(e.target.value)} />
+          <input type="date" placeholder="Date of Birth" value={dob} onChange={(e) => setDob(e.target.value)} />
+        </div>
       </section>
 
       {/* Seat Selection */}
-      <section>
+      <section className="card">
         <h3>Select a Seat</h3>
         <p>First Class: rows 1-2 · Business: rows 3-6 · Economy: rows 7-20</p>
-        <div>
+        <div className="seat-map">
           {rows.map((row) => (
-            <div key={row}>
+            <div key={row} className="seat-row">
               {cols.map((col) => {
                 const seatId = `${row}${col}`
                 const seatClass = getSeatClass(row)
@@ -89,14 +91,7 @@ function BookingPage() {
                   <button
                     key={seatId}
                     onClick={() => setSelectedSeat(seatId)}
-                    style={{
-                      background: selectedSeat === seatId ? 'blue' : seatClass === 'first' ? 'gold' : seatClass === 'business' ? 'silver' : 'lightgray',
-                      margin: '2px',
-                      padding: '6px',
-                      cursor: 'pointer',
-                      border: '1px solid #ccc',
-                      borderRadius: '4px'
-                    }}
+                    className={`seat seat-${seatClass} ${selectedSeat === seatId ? 'seat-selected' : ''}`}
                   >
                     {seatId}
                   </button>
@@ -105,12 +100,12 @@ function BookingPage() {
             </div>
           ))}
         </div>
-        {selectedSeat && <p>Selected seat: {selectedSeat}</p>}
+        {selectedSeat && <p>Selected seat: <strong>{selectedSeat}</strong></p>}
       </section>
 
       {/* Confirm Button */}
       <section>
-        <button onClick={handleConfirm}>Confirm Booking</button>
+        <button className="btn-primary" onClick={handleConfirm}>Confirm Booking</button>
       </section>
 
     </div>

@@ -10,7 +10,7 @@ body {
   color: #1a1a1a;
 }
 
-/* Navbar */
+/* ── NAVBAR ── */
 nav {
   display: flex;
   justify-content: space-between;
@@ -23,6 +23,10 @@ nav {
 nav h1 {
   font-size: 24px;
   color: white;
+}
+
+nav h1 svg {
+  color: #e8c96e;
 }
 
 nav ul {
@@ -41,26 +45,26 @@ nav ul li a:hover {
   color: #e8c96e;
 }
 
-/* Hero */
-section:nth-child(2) {
+/* ── HERO ── */
+.hero {
   background-color: #0a1628;
   color: white;
   text-align: center;
   padding: 80px 24px 40px;
 }
 
-section:nth-child(2) h2 {
+.hero h2 {
   font-size: 48px;
   margin-bottom: 16px;
 }
 
-section:nth-child(2) p {
+.hero p {
   font-size: 18px;
   color: #9ba8bc;
 }
 
-/* Search Bar */
-section:nth-child(3) {
+/* ── SEARCH BAR ── */
+.search-bar {
   background-color: #0a1628;
   padding: 0 24px 60px;
   display: flex;
@@ -69,12 +73,12 @@ section:nth-child(3) {
   gap: 16px;
 }
 
-section:nth-child(3) div {
+.search-bar .trip-toggle {
   display: flex;
   gap: 8px;
 }
 
-section:nth-child(3) div button {
+.search-bar .trip-toggle button {
   padding: 8px 20px;
   border: none;
   border-radius: 6px;
@@ -84,11 +88,11 @@ section:nth-child(3) div button {
   font-size: 14px;
 }
 
-section:nth-child(3) div button:hover {
+.search-bar .trip-toggle button:hover {
   background-color: rgba(255,255,255,0.2);
 }
 
-section:nth-child(3) input {
+.search-bar input {
   padding: 12px 16px;
   border-radius: 8px;
   border: none;
@@ -96,7 +100,7 @@ section:nth-child(3) input {
   width: 300px;
 }
 
-section:nth-child(3) > button {
+.search-bar .search-btn {
   padding: 12px 40px;
   background-color: #e8c96e;
   color: #0a1628;
@@ -107,10 +111,164 @@ section:nth-child(3) > button {
   cursor: pointer;
 }
 
-section:nth-child(3) > button:hover {
+.search-bar .search-btn:hover {
   background-color: #c4a347;
 }
 
-nav h1 svg {
-  color: #e8c96e;
+/* ── PAGES WRAPPER ── */
+.page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+/* ── SECTION HEADINGS ── */
+.page h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: #0a1628;
+}
+
+.page h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: #0a1628;
+}
+
+.page p {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+/* ── CARDS ── */
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+/* ── FORMS ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.form-group input {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  width: 100%;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #0a1628;
+}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  padding: 12px 32px;
+  background-color: #0a1628;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1a3560;
+}
+
+.btn-secondary {
+  padding: 12px 32px;
+  background-color: white;
+  color: #0a1628;
+  border: 1px solid #0a1628;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+.btn-secondary:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-danger {
+  padding: 8px 20px;
+  background-color: #e24b4a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background-color: #c03c3b;
+}
+
+/* ── STATUS BADGES ── */
+.badge-confirmed {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #e1f5ee;
+  color: #0f6e56;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.badge-cancelled {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #fcebeb;
+  color: #a32d2d;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* ── SEAT MAP ── */
+.seat-map {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 16px 0;
+}
+
+.seat-row {
+  display: flex;
+  gap: 4px;
+}
+
+.seat {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  min-width: 36px;
+  text-align: center;
+}
+
+.seat-first { background-color: #faeeda; color: #854f0b; }
+.seat-business { background-color: #e6f1fb; color: #185fa5; }
+.seat-economy { background-color: #f1efe8; color: #444; }
+.seat-selected { background-color: #0a1628 !important; color: white !important; }
+
+/* ── CONFIRMATION PAGE ── */
+.confirmation-ref {
+  font-size: 36px;
+  font-weight: bold;
+  color: #0a1628;
+  letter-spacing: 4px;
+  margin: 16px 0;
 }

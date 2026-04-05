@@ -15,7 +15,7 @@ function HomePage() {
   const navigate = useNavigate()
 
   // Packages all search inputs into URL query parameters
-  
+  // e.g. /search?from=LHR&to=JFK&departure=2025-04-12&trip=round
   const handleSearch = () => {
     navigate(`/search?from=${from}&to=${to}&departure=${departure}&return=${returnDate}&passengers=${passengers}&trip=${tripType}`)
   }
@@ -34,14 +34,14 @@ function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section>
+      <section className="hero">
         <h2>Fly to anywhere you dream of</h2>
         <p>Search thousands of routes and book in seconds</p>
       </section>
 
       {/* Search Bar */}
-      <section>
-        <div>
+      <section className="search-bar">
+        <div className="trip-toggle">
           <button onClick={() => setTripType('round')}>Round Trip</button>
           <button onClick={() => setTripType('oneway')}>One Way</button>
         </div>
@@ -55,7 +55,7 @@ function HomePage() {
         )}
 
         <input type="number" placeholder="Passengers" min="1" value={passengers} onChange={(e) => setPassengers(e.target.value)} />
-        <button onClick={handleSearch}>Search</button>
+        <button className="search-btn" onClick={handleSearch}>Search</button>
       </section>
 
     </div>

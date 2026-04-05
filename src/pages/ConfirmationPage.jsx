@@ -15,18 +15,18 @@ function ConfirmationPage() {
   const price = searchParams.get('price')
 
   return (
-    <div>
+    <div className="page">
 
       {/* Success Message */}
-      <section>
+      <section className="card" style={{ textAlign: 'center' }}>
         <h2>Booking Confirmed!</h2>
         <p>Your booking reference is:</p>
-        <h1>{ref}</h1>
+        <div className="confirmation-ref">{ref}</div>
         <p>Save this reference to view or cancel your booking later</p>
       </section>
 
       {/* Booking Summary */}
-      <section>
+      <section className="card">
         <h3>Booking Summary</h3>
         <p>Passenger: {name}</p>
         <p>Flight: {flight}</p>
@@ -37,8 +37,8 @@ function ConfirmationPage() {
 
       {/* Navigation Buttons */}
       <section>
-        <button onClick={() => navigate('/my-bookings')}>View My Bookings</button>
-        <button onClick={() => navigate('/')}>Back to Home</button>
+        <button className="btn-primary" onClick={() => navigate('/my-bookings')}>View My Bookings</button>
+        <button className="btn-secondary" onClick={() => navigate('/')}>Back to Home</button>
       </section>
 
     </div>
