@@ -272,3 +272,20 @@ nav ul li a:hover {
   letter-spacing: 4px;
   margin: 16px 0;
 }
+
+.seat-taken {
+  background-color: #ccc !important;
+  color: #999 !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+nav ul li a,
+nav ul li a:visited {
+  color: white;
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  color: #e8c96e;
+}

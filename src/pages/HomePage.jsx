@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { FaPlane } from 'react-icons/fa'
 
 function HomePage() {
@@ -27,9 +27,9 @@ function HomePage() {
       <nav>
         <h1>SkyLine <FaPlane /></h1>
         <ul>
-          <li><a href="#">Flights</a></li>
-          <li><a href="#">My Trips</a></li>
-          <li><a href="#">Help</a></li>
+          <li><Link to="/">Flights</Link></li>
+          <li><Link to="/my-bookings">My Trips</Link></li>
+          <li><Link to="#">Help</Link></li>
         </ul>
       </nav>
 

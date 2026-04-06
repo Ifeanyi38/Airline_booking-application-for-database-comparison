@@ -1,9 +1,9 @@
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import sampleFlights from '../data/sampleFlights'
+import { useState, useEffect } from 'react'
+import { useSearchParams, useNavigate, Link } from 'react-router-dom'
+import { searchFlights } from '../services/api'
 
 function SearchResultsPage() {
 
-  // useSearchParams reads the query parameters from the URL
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
@@ -13,21 +13,38 @@ function SearchResultsPage() {
   const passengers = searchParams.get('passengers')
   const tripType = searchParams.get('trip')
 
-  // Both from and to must match for a flight to appear in results
-  const filteredFlights = sampleFlights.filter(
-    (flight) =>
-      (flight.fromCity.toLowerCase().includes(from.toLowerCase()) ||
-      flight.from.toLowerCase().includes(from.toLowerCase())) &&
-      (flight.toCity.toLowerCase().includes(to.toLowerCase()) ||
-      flight.to.toLowerCase().includes(to.toLowerCase()))
-  )
+  const [flights, setFlights] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Fetch flights from Django API when the page loads
+  useEffect(() => {
+    const fetchFlights = async () => {
+      try {
+        const response = await searchFlights(from, to)
+        setFlights(response.data)
+        setLoading(false)
+      } catch (err) {
+        setError('Failed to load flights. Please try again.')
+        setLoading(false)
+      }
+    }
+
+    fetchFlights()
+  }, [from, to])
 
   const handleSelect = (flight) => {
     navigate(`/booking?flightId=${flight.id}&passengers=${passengers}`)
   }
 
+  if (loading) return <p>Loading flights...</p>
+  if (error) return <p>{error}</p>
+
   return (
     <div className="page">
+
+      {/* Back to Home */}
+      <Link to="/">← Back to Home</Link>
 
       {/* Search Summary */}
       <section>
@@ -37,17 +54,15 @@ function SearchResultsPage() {
 
       {/* Flight Results */}
       <section>
-        {filteredFlights.length === 0 ? (
+        {flights.length === 0 ? (
           <p>No flights found for this route.</p>
         ) : (
-          filteredFlights.map((flight) => (
+          flights.map((flight) => (
             <div key={flight.id} className="card">
-              <h3>{flight.flightNumber} — {flight.fromCity} → {flight.toCity}</h3>
-              <p>{flight.departure} → {flight.arrival}</p>
-              <p>Duration: {flight.duration}</p>
-              <p>Stops: {flight.stops === 0 ? 'Direct' : `${flight.stops} stop`}</p>
-              <p>Class: {flight.class}</p>
-              <p>Price: £{flight.price}</p>
+              <h3>{flight.flight_number} — {flight.origin.city} → {flight.destination.city}</h3>
+              <p>{flight.departure_time} → {flight.arrival_time}</p>
+              <p>Status: {flight.status}</p>
+              <p>Price: £{flight.base_price}</p>
               <button className="btn-primary" onClick={() => handleSelect(flight)}>Select</button>
             </div>
           ))

@@ -1,20 +1,23 @@
-import { useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import sampleFlights from '../data/sampleFlights'
+import { useState, useEffect } from 'react'
+import { useSearchParams, useNavigate, Link } from 'react-router-dom'
+import { getFlightSeats, createBooking } from '../services/api'
+import axios from 'axios'
 
 function BookingPage() {
 
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  // Get the flight id and passengers from the URL
   const flightId = parseInt(searchParams.get('flightId'))
   const passengers = searchParams.get('passengers')
 
-  // Find the selected flight from the mock data using the flight id
-  const flight = sampleFlights.find((f) => f.id === flightId)
+  // Flight and seats state — fetched from Django API
+  const [flight, setFlight] = useState(null)
+  const [seats, setSeats] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Passenger details state — maps directly to the passenger table in the database
+  // Passenger details state
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -24,44 +27,69 @@ function BookingPage() {
 
   // Selected seat state
   const [selectedSeat, setSelectedSeat] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
 
-  // Generates seat rows 1-20 and columns A-F
-  const rows = Array.from({ length: 20 }, (_, i) => i + 1)
-  const cols = ['A', 'B', 'C', 'D', 'E', 'F']
+  // Fetch available seats for this flight from Django
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const seatsResponse = await getFlightSeats(flightId)
+        setSeats(seatsResponse.data)
+        setLoading(false)
+      } catch (err) {
+        setError('Failed to load flight details. Please try again.')
+        setLoading(false)
+      }
+    }
 
-  // Determines seat class based on row number
-  const getSeatClass = (row) => {
-    if (row <= 2) return 'first'
-    if (row <= 6) return 'business'
-    return 'economy'
-  }
+    fetchData()
+  }, [flightId])
 
-  // Generates a random booking reference e.g. SK4J9XQ2
-  const generateRef = () => {
-    return 'SK' + Math.random().toString(36).substring(2, 8).toUpperCase()
-  }
-
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!firstName || !lastName || !email || !passport || !dob || !selectedSeat) {
       alert('Please fill in all fields and select a seat')
       return
     }
 
-    const bookingRef = generateRef()
-    navigate(`/confirmation?ref=${bookingRef}&flight=${flight.flightNumber}&from=${flight.fromCity}&to=${flight.toCity}&seat=${selectedSeat}&name=${firstName} ${lastName}&price=${flight.price}`)
+    setSubmitting(true)
+
+    try {
+      const bookingData = {
+        first_name:      firstName,
+        last_name:       lastName,
+        email:           email,
+        phone:           phone,
+        passport_number: passport,
+        date_of_birth:   dob,
+        flight_id:       flightId,
+        seat_id:         selectedSeat.id,
+      }
+
+      const response = await createBooking(bookingData)
+      const booking  = response.data
+
+      // Navigate to confirmation with real booking details
+      navigate(`/confirmation?ref=${booking.booking_reference}&flight=${booking.flight.flight_number}&from=${booking.flight.origin.city}&to=${booking.flight.destination.city}&seat=${booking.seat.seat_number}&name=${firstName} ${lastName}&price=${booking.total_price}`)
+
+    } catch (err) {
+      alert('Booking failed. The seat may already be taken. Please select another seat.')
+      setSubmitting(false)
+    }
   }
 
-  if (!flight) return <p>Flight not found</p>
+  if (loading) return <p>Loading flight details...</p>
+  if (error) return <p>{error}</p>
 
   return (
     <div className="page">
 
+      {/* Back to Search */}
+      <Link to="/search">← Back to Search Results</Link>
+
       {/* Flight Summary */}
       <section className="card">
-        <h2>Booking — {flight.flightNumber}</h2>
-        <p>{flight.fromCity} → {flight.toCity}</p>
-        <p>{flight.departure} → {flight.arrival} · {flight.duration}</p>
-        <p>Price: £{flight.price}</p>
+        <h2>Booking — Flight {flightId}</h2>
+        <p>Passengers: {passengers}</p>
       </section>
 
       {/* Passenger Details Form */}
@@ -77,35 +105,34 @@ function BookingPage() {
         </div>
       </section>
 
-      {/* Seat Selection */}
+      {/* Seat Selection — real seats from Django */}
       <section className="card">
         <h3>Select a Seat</h3>
-        <p>First Class: rows 1-2 · Business: rows 3-6 · Economy: rows 7-20</p>
+        <p>Gold = First Class · Blue = Business · Gray = Economy · Dark = Selected</p>
         <div className="seat-map">
-          {rows.map((row) => (
-            <div key={row} className="seat-row">
-              {cols.map((col) => {
-                const seatId = `${row}${col}`
-                const seatClass = getSeatClass(row)
-                return (
-                  <button
-                    key={seatId}
-                    onClick={() => setSelectedSeat(seatId)}
-                    className={`seat seat-${seatClass} ${selectedSeat === seatId ? 'seat-selected' : ''}`}
-                  >
-                    {seatId}
-                  </button>
-                )
-              })}
-            </div>
+          {seats.map((seat) => (
+            <button
+              key={seat.id}
+              disabled={!seat.available}
+              onClick={() => setSelectedSeat(seat)}
+              className={`seat seat-${seat.seat_class} ${selectedSeat?.id === seat.id ? 'seat-selected' : ''} ${!seat.available ? 'seat-taken' : ''}`}
+            >
+              {seat.seat_number}
+            </button>
           ))}
         </div>
-        {selectedSeat && <p>Selected seat: <strong>{selectedSeat}</strong></p>}
+        {selectedSeat && <p>Selected seat: <strong>{selectedSeat.seat_number} ({selectedSeat.seat_class})</strong></p>}
       </section>
 
       {/* Confirm Button */}
       <section>
-        <button className="btn-primary" onClick={handleConfirm}>Confirm Booking</button>
+        <button
+          className="btn-primary"
+          onClick={handleConfirm}
+          disabled={submitting}
+        >
+          {submitting ? 'Confirming...' : 'Confirm Booking'}
+        </button>
       </section>
 
     </div>

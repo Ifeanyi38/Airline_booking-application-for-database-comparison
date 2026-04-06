@@ -1,74 +1,53 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { getBookingsByEmail, cancelBooking } from '../services/api'
 
 function MyBookingsPage() {
 
-  const navigate = useNavigate()
-
-  // Email state for looking up bookings
   const [email, setEmail] = useState('')
+  const [bookings, setBookings] = useState([])
   const [searched, setSearched] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  // Mock bookings data — will be replaced with API call in Phase 2
-  const mockBookings = [
-    {
-      id: 1,
-      ref: 'SK4J9XQ2',
-      flight: 'SK101',
-      from: 'London',
-      to: 'New York',
-      departure: '08:00',
-      seat: '5A',
-      price: 399,
-      status: 'confirmed',
-      email: 'test@email.com'
-    },
-    {
-      id: 2,
-      ref: 'SKAB12CD',
-      flight: 'SK202',
-      from: 'London',
-      to: 'Dubai',
-      departure: '14:30',
-      seat: '12C',
-      price: 289,
-      status: 'confirmed',
-      email: 'test@email.com'
-    },
-    {
-      id: 3,
-      ref: 'SK99XYZ1',
-      flight: 'SK303',
-      from: 'London',
-      to: 'Tokyo',
-      departure: '10:00',
-      seat: '1A',
-      price: 520,
-      status: 'cancelled',
-      email: 'test@email.com'
-    },
-  ]
+  // Fetch bookings from Django API by email
+  const handleSearch = async () => {
+    if (!email) {
+      alert('Please enter your email address')
+      return
+    }
 
-  const [bookings, setBookings] = useState(mockBookings)
-
-  // Cancels a booking by updating its status to cancelled
-  const handleCancel = (id) => {
-    setBookings(bookings.map((booking) =>
-      booking.id === id ? { ...booking, status: 'cancelled' } : booking
-    ))
-  }
-
-  const handleSearch = () => {
+    setLoading(true)
     setSearched(true)
+
+    try {
+      const response = await getBookingsByEmail(email)
+      setBookings(response.data)
+      setLoading(false)
+    } catch (err) {
+      setError('Failed to load bookings. Please try again.')
+      setLoading(false)
+    }
   }
 
-  // Filters bookings by the email the user entered
-  const results = bookings.filter(
-    (booking) => booking.email.toLowerCase() === email.toLowerCase()
-  )
+  // Cancel a booking via Django API
+  const handleCancel = async (bookingId) => {
+    try {
+      await cancelBooking(bookingId)
+      // Update the booking status in state without refetching
+      setBookings(bookings.map((booking) =>
+        booking.id === bookingId ? { ...booking, status: 'cancelled' } : booking
+      ))
+    } catch (err) {
+      alert('Failed to cancel booking. Please try again.')
+    }
+  }
 
   return (
     <div className="page">
+
+      {/* Back to Home */}
+      <Link to="/">← Back to Home</Link>
 
       {/* Email Search */}
       <section className="card">
@@ -85,20 +64,27 @@ function MyBookingsPage() {
         <button className="btn-primary" onClick={handleSearch}>Find Bookings</button>
       </section>
 
+      {/* Loading state */}
+      {loading && <p>Loading your bookings...</p>}
+
+      {/* Error state */}
+      {error && <p>{error}</p>}
+
       {/* Booking Results */}
-      {searched && (
+      {searched && !loading && (
         <section>
-          {results.length === 0 ? (
+          {bookings.length === 0 ? (
             <p>No bookings found for this email address</p>
           ) : (
-            results.map((booking) => (
+            bookings.map((booking) => (
               <div key={booking.id} className="card">
-                <h3>Booking Reference: {booking.ref}</h3>
-                <p>Flight: {booking.flight}</p>
-                <p>Route: {booking.from} → {booking.to}</p>
-                <p>Departure: {booking.departure}</p>
-                <p>Seat: {booking.seat}</p>
-                <p>Price: £{booking.price}</p>
+                <h3>Booking Reference: {booking.booking_reference}</h3>
+                <p>Flight: {booking.flight.flight_number}</p>
+                <p>Route: {booking.flight.origin.city} → {booking.flight.destination.city}</p>
+                <p>Departure: {booking.flight.departure_time}</p>
+                <p>Seat: {booking.seat.seat_number} ({booking.seat.seat_class})</p>
+                <p>Passenger: {booking.passenger.first_name} {booking.passenger.last_name}</p>
+                <p>Price: £{booking.total_price}</p>
                 <p>Status: <span className={booking.status === 'confirmed' ? 'badge-confirmed' : 'badge-cancelled'}>{booking.status}</span></p>
 
                 {/* Only show cancel button if booking is confirmed */}

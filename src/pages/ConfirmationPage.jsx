@@ -1,4 +1,4 @@
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 
 function ConfirmationPage() {
 
@@ -6,16 +6,19 @@ function ConfirmationPage() {
   const navigate = useNavigate()
 
   // Read booking details passed from the booking page via URL parameters
-  const ref = searchParams.get('ref')
-  const flight = searchParams.get('flight')
-  const from = searchParams.get('from')
-  const to = searchParams.get('to')
-  const seat = searchParams.get('seat')
-  const name = searchParams.get('name')
-  const price = searchParams.get('price')
+  const ref     = searchParams.get('ref')
+  const flight  = searchParams.get('flight')
+  const from    = searchParams.get('from')
+  const to      = searchParams.get('to')
+  const seat    = searchParams.get('seat')
+  const name    = searchParams.get('name')
+  const price   = searchParams.get('price')
 
   return (
     <div className="page">
+
+      {/* Back to Home */}
+      <Link to="/">← Back to Home</Link>
 
       {/* Success Message */}
       <section className="card" style={{ textAlign: 'center' }}>
